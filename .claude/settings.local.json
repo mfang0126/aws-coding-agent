@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "/Users/freedom/ai/bedrock-agent-template"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "awslabs.aws-documentation-mcp-server",
+    "awslabs.aws-api-mcp-server",
+    "strands-agents"
+  ],
+  "enableAllProjectMcpServers": true
+}

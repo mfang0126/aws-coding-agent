@@ -65,6 +65,11 @@ Thumbs.db
 .bedrock_agentcore.yaml
 !.bedrock_agentcore.yaml.template
 
+# Claude Code and Serena
+.claude/
+.serena/
+claudedocs/
+
 # Temporary files
 tmp/
 temp/

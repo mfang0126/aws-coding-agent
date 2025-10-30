@@ -1,173 +1,259 @@
-# AWS Coding Agent MVP
+# AWS Coding Agent
 
-AI coding assistant with GitHub OAuth integration, streaming chat interface, and PR review automation.
+AI coding assistant powered by AWS Bedrock and Claude Sonnet 4.5 with GitHub integration.
 
-## 🚀 Quick Start
+## Quick Start
 
-**New to this project?** Start here:
 ```bash
-cat START_HERE.md
+# Start development server
+make dev
+
+# Run tests
+make test
+
+# Setup GitHub OAuth (optional)
+make setup-github
 ```
 
-## 📚 Documentation
+**All commands**: See [docs/COMMANDS.md](docs/COMMANDS.md)
 
-| Document | Purpose |
-|----------|---------|
-| **[START_HERE.md](START_HERE.md)** | Session startup guide - read this first |
-| **[quick-start-guide.md](claudedocs/quick-start-guide.md)** | 5-day implementation roadmap |
-| **[implementation-workflow.md](claudedocs/implementation-workflow.md)** | Detailed phase-by-phase guide |
-| **[dependency-graph.md](claudedocs/dependency-graph.md)** | Visual dependencies & timelines |
-| **[incremental-testing-strategy.md](claudedocs/incremental-testing-strategy.md)** | Test after each phase |
-| **[draft.md](draft.md)** | Complete architecture specification |
+## Status: ✅ Fully Functional
 
-## 🏗️ Architecture
+All 7 implementation phases complete:
+- ✅ Foundation (config, logging, structure)
+- ✅ OAuth Infrastructure (hybrid auth)
+- ✅ Core Agent (Claude Sonnet 4.5)
+- ✅ GitHub Integration (5 tools)
+- ✅ Streaming Chat (SSE)
+- ✅ Testing (29/31 passing)
+- ✅ Deployment Ready (Docker + AgentCore)
 
-- **Backend:** Python 3.11+, FastAPI, Strands Agents SDK
-- **AI Model:** Amazon Bedrock (Claude Sonnet 4.5)
-- **Authentication:** GitHub OAuth via AgentCore Identity
-- **Deployment:** AWS AgentCore Runtime
-- **Streaming:** Server-Sent Events (SSE)
+## Features
 
-## 📋 Features
+- **AI Agent**: Claude Sonnet 4.5 via AWS Bedrock
+- **Streaming**: Real-time responses with Server-Sent Events
+- **GitHub Tools**: List repos, create issues, create PRs, get repo info
+- **Hybrid Auth**: Local token (dev) OR OAuth (production)
+- **Modern Python**: Functions-first, Pydantic v2, type hints
 
-- ✅ GitHub OAuth (3-Legged OAuth with Device Flow)
-- ✅ Streaming chat interface
-- ✅ PR review automation
-- ✅ GitHub API integration (repos, issues, PRs)
-- ✅ Functional Python architecture
-- ✅ Comprehensive testing strategy
-
-## ⏱️ Timeline
-
-| Approach | Duration |
-|----------|----------|
-| Sequential | 28-36 hours |
-| Parallel (2 devs) | 26-28 hours |
-| Optimized (3 devs) | 18-26 hours |
-| MVP Fast Track | 18 hours |
-
-## 🛠️ Prerequisites
+## Prerequisites
 
 - Python 3.11+
-- uv or Poetry
-- Docker
-- AWS CLI (configured)
-- AgentCore CLI
+- AWS account with Bedrock access
 - GitHub account
+- AWS CLI configured with SSO
 
-## 📦 Installation
+## Installation
 
 ```bash
 # Clone repository
-git clone https://github.com/mfang0126/aws-coding-agent.git
+git clone <your-repo-url>
 cd aws-coding-agent
 
-# Install dependencies
+# Install dependencies (uses uv)
 uv sync
-# or: poetry install
 
-# Setup environment
+# Configure environment
 cp .env.example .env
 # Edit .env with your credentials
 ```
 
-## 🚦 Getting Started
+## Configuration
 
-Follow the implementation phases:
-
-### Phase 1: Foundation (2-3h)
-- Project structure
-- Configuration
-- Logging
-
-### Phase 2: OAuth Infrastructure (4-5h)
-- GitHub OAuth App
-- AWS OAuth provider
-- Authentication module
-
-### Phase 3: Core Agent (3-4h)
-- Prompts & templates
-- Data models
-- Agent factory
-
-### Phase 4: GitHub Integration (4-5h)
-- GitHub SDK setup
-- Tool implementations
-- Rate limiting
-
-### Phase 5: Streaming Chat (5-6h)
-- Stream handler
-- FastAPI app
-- Session management
-
-### Phase 6: Testing (6-8h)
-- Unit tests
-- Integration tests
-- E2E tests
-
-### Phase 7: Deployment (4-5h)
-- AgentCore config
-- Docker build
-- Production deployment
-
-## ✅ Quality Gates
-
-Each phase includes:
-- Specific completion criteria
-- Test suite to validate
-- Manual verification steps
-
-## 🧪 Testing
+### Required Environment Variables
 
 ```bash
-# Run all tests
-pytest tests/ --cov=src --cov-report=term-missing
+# AWS
+AWS_REGION=ap-southeast-2
+AWS_PROFILE=your-profile
 
-# Run phase-specific tests
-pytest tests/test_config.py -v          # Phase 1
-pytest tests/test_auth.py -v            # Phase 2
-pytest tests/test_agent_creation.py -v  # Phase 3
+# Bedrock Model
+MODEL_ID=au.anthropic.claude-sonnet-4-5-20250929-v1:0
+
+# GitHub OAuth (for production)
+GITHUB_CLIENT_ID=your_client_id
+GITHUB_CLIENT_SECRET=your_client_secret
+
+# GitHub Personal Token (for local dev)
+# GITHUB_TOKEN=ghp_your_token  # Optional, bypasses OAuth
 ```
 
-## 🚀 Deployment
+### Authentication Setup
+
+**Option 1: Local Development (Recommended)**
+
+Create a GitHub Personal Access Token:
+1. Go to https://github.com/settings/tokens
+2. Generate new token (classic)
+3. Select scopes: `repo`, `read:user`
+4. Add to `.env`: `GITHUB_TOKEN=ghp_...`
+
+**Option 2: Production (OAuth)**
+
+Setup OAuth provider:
+```bash
+make setup-github
+```
+
+Then register the callback URL in your GitHub OAuth App.
+
+**Full guide**: See [docs/AUTHENTICATION.md](docs/AUTHENTICATION.md)
+
+## Usage
+
+### Start Server
 
 ```bash
-# Configure AgentCore
+make dev  # Development with hot reload
+```
+
+### Test the Agent
+
+```bash
+# General coding questions
+curl -X POST http://localhost:8000/chat/stream \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"Explain recursion","session_id":"test"}' \
+  --no-buffer
+
+# GitHub operations
+curl -X POST http://localhost:8000/chat/stream \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"List my GitHub repos","session_id":"test"}' \
+  --no-buffer
+```
+
+### Run Tests
+
+```bash
+make test          # All tests
+make test-cov      # With coverage
+make lint          # Code quality
+```
+
+## Project Structure
+
+```
+aws-coding-agent/
+├── src/
+│   ├── agent/          # Agent factory
+│   ├── auth/           # OAuth setup
+│   ├── chat/           # SSE streaming
+│   ├── models/         # Pydantic models
+│   ├── prompts/        # System prompts
+│   ├── tools/          # GitHub tools
+│   ├── utils/          # Logging
+│   ├── config.py       # Settings
+│   └── main.py         # FastAPI app
+├── tests/              # Test suite
+├── Makefile            # Commands
+├── COMMANDS.md         # Command reference
+├── AUTHENTICATION.md   # Auth guide
+└── .env                # Configuration
+```
+
+## Architecture
+
+**Backend**: Python 3.11, FastAPI, Uvicorn
+**AI Model**: Claude Sonnet 4.5 (AWS Bedrock)
+**Agent Framework**: Strands Agents SDK
+**Auth**: Hybrid (local token or AWS AgentCore OAuth)
+**Deployment**: Docker, AWS AgentCore Runtime
+**Streaming**: Server-Sent Events (SSE)
+
+## Available Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/health` | GET | Health check |
+| `/chat/stream` | POST | Streaming chat |
+| `/docs` | GET | API documentation |
+
+## GitHub Integration
+
+The agent can:
+- List your repositories
+- Get repository information
+- Create issues
+- List issues
+- Create pull requests
+
+Works in both auth modes (local token or OAuth).
+
+## Development
+
+```bash
+# Start server with hot reload
+make dev
+
+# In another terminal
+make test          # Run tests
+make lint          # Check code
+make format        # Format code
+```
+
+## Deployment
+
+### Docker
+
+```bash
+docker build -t aws-coding-agent .
+docker run -p 8000:8000 --env-file .env aws-coding-agent
+```
+
+### AWS AgentCore
+
+```bash
+# Configure
 agentcore configure -e src/agent/runtime.py --region ap-southeast-2
 
-# Launch to AWS
+# Deploy
 agentcore launch -a coding-agent
 
 # Check status
 agentcore status -a coding-agent
 ```
 
-## 📊 Project Status
+## Troubleshooting
 
-- [x] Architecture designed
-- [x] Documentation complete
-- [ ] Phase 1: Foundation
-- [ ] Phase 2: OAuth Infrastructure
-- [ ] Phase 3: Core Agent
-- [ ] Phase 4: GitHub Integration
-- [ ] Phase 5: Streaming Chat
-- [ ] Phase 6: Testing
-- [ ] Phase 7: Deployment
+### Agent won't start
+- Check AWS SSO: `aws sso login --profile your-profile`
+- Verify .env configuration
+- Check logs for errors
 
-## 🤝 Contributing
+### GitHub tools not working
+- **Local mode**: Verify GITHUB_TOKEN is set
+- **OAuth mode**: Check OAuth provider setup
+- See [AUTHENTICATION.md](AUTHENTICATION.md)
 
-This is currently a personal project. See [implementation-workflow.md](claudedocs/implementation-workflow.md) for development guidelines.
+### Streaming issues
+- Check server logs
+- Verify curl `--no-buffer` flag
+- Test `/health` endpoint first
 
-## 📝 License
+## Documentation
 
-[Add your license here]
+| File | Purpose |
+|------|---------|
+| [README.md](README.md) | This file - overview & quick start |
+| [docs/COMMANDS.md](docs/COMMANDS.md) | All available make commands |
+| [docs/AUTHENTICATION.md](docs/AUTHENTICATION.md) | Auth setup (local vs OAuth) |
 
-## 🔗 Resources
+## Contributing
 
-- [AWS Bedrock AgentCore](https://docs.aws.amazon.com/bedrock-agentcore/)
+This is a reference implementation. Feel free to fork and customize for your needs.
+
+## License
+
+MIT License - See LICENSE file
+
+## Resources
+
+- [AWS Bedrock Documentation](https://docs.aws.amazon.com/bedrock/)
 - [Strands Agents SDK](https://github.com/aws-samples/strands-agents-sdk)
 - [GitHub OAuth Apps](https://docs.github.com/en/apps/oauth-apps)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
 
 ---
 
-**Built with:** Python, FastAPI, AWS Bedrock, GitHub OAuth, AgentCore Runtime
+**Built with**: Python • AWS Bedrock • Strands Agents • FastAPI • Claude Sonnet 4.5

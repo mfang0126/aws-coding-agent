@@ -77,3 +77,6 @@ temp/
 *.tmp
 *.bak
 *.bk
+
+# Docker artifacts (exclude nested .dockerignore files)
+src/**/.dockerignore

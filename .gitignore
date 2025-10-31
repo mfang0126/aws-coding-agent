@@ -64,6 +64,7 @@ Thumbs.db
 # AgentCore
 .bedrock_agentcore.yaml
 !.bedrock_agentcore.yaml.template
+.bedrock_agentcore/
 
 # Claude Code and Serena
 .claude/
@@ -74,3 +75,5 @@ claudedocs/
 tmp/
 temp/
 *.tmp
+*.bak
+*.bk

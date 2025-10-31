@@ -1,7 +1,7 @@
 # Modern Python Project Commands
 # Just like npm scripts, but even simpler: make <command>
 
-.PHONY: dev start test lint format setup-github health
+.PHONY: dev start test lint format setup-github health deploy test-runtime logs
 
 # Development
 dev:
@@ -27,6 +27,24 @@ format:
 # Setup
 setup-github:
 	uv run python -m src.auth.setup_provider
+
+# Deployment
+deploy:
+	@echo "Deploying to AWS BedrockAgentCore..."
+	./scripts/deploy.sh
+
+deploy-fast:
+	@echo "Fast deployment (skip provider and role creation)..."
+	./scripts/deploy.sh --skip-provider --skip-role
+
+test-runtime:
+	@echo "Testing deployed runtime..."
+	./scripts/test-runtime.sh
+
+logs:
+	@echo "Tailing CloudWatch logs..."
+	aws logs tail /aws/bedrock/agentcore/coding-agent-production \
+		--region ap-southeast-2 --follow --format short
 
 # Utilities
 health:

@@ -23,9 +23,9 @@ class Settings(BaseSettings):
     aws_region: str = Field(default="ap-southeast-2", description="AWS region")
     aws_profile: str | None = Field(default=None, description="AWS CLI profile name")
 
-    # GitHub OAuth
-    github_client_id: SecretStr = Field(..., description="GitHub OAuth App Client ID")
-    github_client_secret: SecretStr = Field(..., description="GitHub OAuth App Client Secret")
+    # GitHub OAuth (optional - not needed when using AgentCore OAuth providers)
+    github_client_id: SecretStr | None = Field(default=None, description="GitHub OAuth App Client ID")
+    github_client_secret: SecretStr | None = Field(default=None, description="GitHub OAuth App Client Secret")
 
     # GitHub Personal Access Token (optional, for local dev)
     github_token: SecretStr | None = Field(

@@ -18,6 +18,7 @@ from bedrock_agentcore.runtime import BedrockAgentCoreApp
 from src.agent.create_agent import create_coding_agent
 
 # Create AgentCore app wrapper
+# HTTP protocol requires specific port configuration
 app = BedrockAgentCoreApp()
 
 # Agent instance - created lazily on first request
@@ -79,4 +80,17 @@ async def invoke(payload: Dict[str, Any]):
 
 
 if __name__ == "__main__":
-    app.run()
+    # HTTP protocol requires port 8080 for AgentCore
+    # See: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-http-protocol-contract.html
+    import os
+    # Force port 8080 regardless of how module is invoked
+    os.environ.setdefault("BEDROCK_AGENTCORE_PORT", "8080")
+    app.run(port=8080, host="0.0.0.0")
+
+# Module-level invocation (python -m src.runtime)
+# This ensures port 8080 is used when run as module
+import sys
+if "runpy" in sys.modules and not hasattr(sys, "_called_from_test"):
+    import os
+    os.environ.setdefault("BEDROCK_AGENTCORE_PORT", "8080")
+    app.run(port=8080, host="0.0.0.0")

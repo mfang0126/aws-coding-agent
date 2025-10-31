@@ -40,10 +40,28 @@
 - `.bedrock_agentcore.yaml` - Deployment configuration
 - `README.md` - Added complete deployment documentation
 
-### Next Investigation Steps
-1. Compare runtime.py with working template implementations
-2. Check BedrockAgentCoreApp health check endpoint requirements
-3. Verify port configuration (8000 vs 8080)
-4. Test with minimal agent (no GitHub tools) to isolate issue
-5. Check if agent creation is still blocking despite lazy loading
-6. Review AgentCore docs for entrypoint streaming requirements
+### Investigation Progress (2025-10-31 03:10 UTC)
+
+**Root Cause Identified**: Port mismatch
+- AWS docs require HTTP protocol on port **8080**
+- App is running on port **8000** (MCP protocol port)
+- `/ping` and `/invocations` endpoints are correctly implemented by BedrockAgentCoreApp
+
+**Fix Attempted**: Modified `src/runtime.py` to call `app.run(port=8080, host="0.0.0.0")`
+- BedrockAgentCoreApp.run() method signature confirms `port: int = 8080` as default
+- However, logs still show `Uvicorn running on http://0.0.0.0:8000`
+- Port parameter not taking effect despite correct syntax
+
+**Possible Causes**:
+1. Module invocation (`python -m src.runtime`) may not execute `__main__` block as expected
+2. BedrockAgentCoreApp may auto-start on import with hardcoded port
+3. Environment variable or config override not yet discovered
+4. Agent toolkit CLI may inject additional runtime configuration
+
+###Next Investigation Steps
+1. Test module-level `app.run()` call outside conditional block
+2. Check for BEDROCK_AGENTCORE_PORT or similar environment variables
+3. Review bedrock-agentcore-starter-toolkit source for port configuration patterns
+4. Test with simpler entrypoint to isolate Strands agent loading overhead
+5. Contact AWS support or check GitHub issues for port configuration guidance
+6. Examine successful template implementations from AWS samples

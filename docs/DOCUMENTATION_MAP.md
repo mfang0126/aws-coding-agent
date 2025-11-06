@@ -12,7 +12,7 @@
 | File | Purpose | Status | Last Updated |
 |------|---------|--------|--------------|
 | **[README.md](../README.md)** | Project overview, quick start, features | ✅ Current | Nov 4 |
-| **[AGENT_DEVELOPMENT_GUIDE.md](../AGENT_DEVELOPMENT_GUIDE.md)** | Architecture patterns & standards | ✅ Current | Reference |
+| **[AGENT_DEVELOPMENT_GUIDE.md](AGENT_DEVELOPMENT_GUIDE.md)** | Architecture patterns & standards | ✅ Current | Reference |
 
 #### `/docs/` - User Documentation
 | File | Purpose | Status | Last Updated |
@@ -132,7 +132,7 @@ Files moved to `docs/archive/` for historical reference:
 3. **Need auth help?** → Check [docs/AUTHENTICATION.md](./AUTHENTICATION.md)
 
 ### For Development
-1. **Understanding architecture?** → Read [AGENT_DEVELOPMENT_GUIDE.md](../AGENT_DEVELOPMENT_GUIDE.md)
+1. **Understanding architecture?** → Read [AGENT_DEVELOPMENT_GUIDE.md](AGENT_DEVELOPMENT_GUIDE.md)
 2. **Recent changes?** → See [claudedocs/alignment-with-guide.md](../claudedocs/alignment-with-guide.md)
 3. **Looking for commands?** → See [docs/COMMANDS.md](./COMMANDS.md)
 

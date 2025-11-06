@@ -127,9 +127,9 @@ make logs
 
 ## 🔗 Quick Links
 
-- **Detailed Guide**: [QUICKSTART.md](QUICKSTART.md)
+- **Detailed Guide**: [QUICKSTART.md](../QUICKSTART.md)
 - **Dev Guide**: [AGENT_DEVELOPMENT_GUIDE.md](AGENT_DEVELOPMENT_GUIDE.md)
-- **Commands**: [docs/COMMANDS_REFERENCE.md](docs/COMMANDS_REFERENCE.md)
+- **Commands**: [COMMANDS_REFERENCE.md](COMMANDS_REFERENCE.md)
 
 ---
 

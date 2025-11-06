@@ -343,7 +343,8 @@ make logs
 
 - [Architecture Documentation](docs/DEPLOYMENT_SUMMARY.md)
 - [Commands Reference](docs/COMMANDS_REFERENCE.md)
-- [Development Guide](AGENT_DEVELOPMENT_GUIDE.md)
+- [Development Guide](docs/AGENT_DEVELOPMENT_GUIDE.md)
+- [Cheat Sheet](docs/CHEATSHEET.md)
 
 ### 🛠️ Extend the Agent
 

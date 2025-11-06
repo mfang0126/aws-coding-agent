@@ -2,16 +2,33 @@
 
 AI coding assistant powered by AWS Bedrock and Claude Sonnet 4.5 with GitHub integration.
 
-## Quick Start
+## 🚀 Quick Start
 
-**Local Development:**
+**New to this project? Start here:**
+
+👉 **[Complete Quick Start Guide →](QUICKSTART.md)**
+
+**TL;DR for experienced users:**
+
 ```bash
-# Start development server
+# 1. Login to AWS
+make aws-login
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with your AWS_PROFILE and credentials
+
+# 3. Install dependencies
+make install
+
+# 4. Start development server
 make dev
 
-# Run tests
-make test
+# 5. Test it
+make health
 ```
+
+Server runs at: **http://localhost:8000**
 
 **Deploy to AWS AgentCore:**
 ```bash

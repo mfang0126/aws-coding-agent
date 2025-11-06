@@ -10,7 +10,7 @@ from strands import Agent
 from strands.models import BedrockModel
 
 from ..config import settings
-from ..prompts.system_prompts import CODING_AGENT_SYSTEM_PROMPT
+from ..constants.prompts import CODING_AGENT_SYSTEM_PROMPT
 
 # Import the appropriate tools based on auth mode
 if settings.github_token:

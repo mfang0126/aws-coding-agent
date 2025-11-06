@@ -1,9 +1,9 @@
 """Tests for prompt templates."""
-from src.prompts.system_prompts import (
+from src.constants.prompts import (
     CODING_AGENT_SYSTEM_PROMPT,
     PR_REVIEW_PLAN_PROMPT_TEMPLATE,
 )
-from src.prompts.templates import generate_plan_markdown, generate_status_json
+from src.constants.messages import generate_plan_markdown, generate_status_json
 
 
 class TestSystemPrompts:

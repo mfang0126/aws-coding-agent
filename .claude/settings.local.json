@@ -1,13 +1,21 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "WebSearch",
+      "Bash(pip install:*)",
+      "Bash(agentcore --help:*)",
+      "Bash(agentcore configure --help:*)"
+    ],
     "additionalDirectories": [
       "/Users/freedom/ai/bedrock-agent-template"
     ]
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "awslabs.aws-documentation-mcp-server",
     "awslabs.aws-api-mcp-server",
     "strands-agents"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

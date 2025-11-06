@@ -339,49 +339,47 @@ aws iam create-policy-version \
 
 ## Cleanup Commands
 
-### Remove All Resources
+**For complete cleanup guide, see [CLEANUP.md](CLEANUP.md)**
+
+### Quick Cleanup (Recommended)
+
 ```bash
-# WARNING: This deletes everything!
+# Preview what will be destroyed (dry run)
+AWS_PROFILE=mingfang agentcore destroy --agent coding_agent --dry-run
 
-# Delete runtime
-aws bedrock-agentcore-control delete-agent-runtime \
-  --region ap-southeast-2 \
-  --agent-runtime-identifier coding-agent-production
+# Destroy all resources with confirmation
+AWS_PROFILE=mingfang agentcore destroy --agent coding_agent --delete-ecr-repo
 
-# Delete OAuth provider
-aws bedrock-agentcore-control delete-oauth2-credential-provider \
-  --region ap-southeast-2 \
-  --name github-provider
+# Destroy all resources without confirmation (careful!)
+AWS_PROFILE=mingfang agentcore destroy --agent coding_agent --delete-ecr-repo --force
+```
 
-# Detach IAM policy
-aws iam detach-role-policy \
-  --role-name AgentCoreRuntimeRole \
-  --policy-arn arn:aws:iam::670326884047:policy/AgentCoreRuntimePolicy
+### Additional Cleanup
 
-# Delete IAM policy
-aws iam delete-policy \
-  --policy-arn arn:aws:iam::670326884047:policy/AgentCoreRuntimePolicy
+```bash
+# Delete S3 bucket
+AWS_PROFILE=mingfang aws s3 rb s3://bedrock-agentcore-codebuild-sources-ACCOUNT-REGION --force
 
-# Delete IAM role
-aws iam delete-role --role-name AgentCoreRuntimeRole
-
-# Delete CloudWatch log group
-aws logs delete-log-group \
-  --log-group-name /aws/bedrock/agentcore/coding-agent-production \
+# Delete OAuth provider (optional - can be reused)
+AWS_PROFILE=mingfang aws bedrock-agentcore delete-oauth2-credential-provider \
+  --name github-provider \
   --region ap-southeast-2
 ```
 
-### Partial Cleanup
-```bash
-# Delete only runtime (keep IAM and OAuth)
-aws bedrock-agentcore-control delete-agent-runtime \
-  --region ap-southeast-2 \
-  --agent-runtime-identifier coding-agent-production
+### Verify Cleanup
 
-# Delete only OAuth provider (keep IAM and runtime)
-aws bedrock-agentcore-control delete-oauth2-credential-provider \
-  --region ap-southeast-2 \
-  --name github-provider
+```bash
+# Check no agents remain
+AWS_PROFILE=mingfang agentcore status
+
+# Check no ECR repositories
+AWS_PROFILE=mingfang aws ecr describe-repositories --region ap-southeast-2 | grep bedrock-agentcore
+
+# Check no S3 buckets
+AWS_PROFILE=mingfang aws s3 ls | grep bedrock-agentcore
+
+# Check local config removed
+ls -la .bedrock_agentcore* 2>/dev/null
 ```
 
 ## Utility Commands

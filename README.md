@@ -385,10 +385,11 @@ agentcore invoke '{"prompt": "Hello, explain recursion"}'
 | File | Purpose |
 |------|---------|
 | [README.md](README.md) | This file - overview & quick start |
-| [DEPLOYMENT_SUMMARY.md](DEPLOYMENT_SUMMARY.md) | Complete deployment overview |
+| [docs/DEPLOYMENT_SUMMARY.md](docs/DEPLOYMENT_SUMMARY.md) | Complete deployment overview |
 | [docs/QUICK_START.md](docs/QUICK_START.md) | 5-minute deployment guide |
+| [docs/CLEANUP.md](docs/CLEANUP.md) | Resource cleanup and destruction guide |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Detailed deployment steps |
-| [COMMANDS_REFERENCE.md](COMMANDS_REFERENCE.md) | Copy-paste command reference |
+| [docs/COMMANDS_REFERENCE.md](docs/COMMANDS_REFERENCE.md) | Copy-paste command reference |
 | [docs/AUTHENTICATION.md](docs/AUTHENTICATION.md) | Auth setup (local vs OAuth) |
 | [docs/COMMANDS.md](docs/COMMANDS.md) | Development commands |
 

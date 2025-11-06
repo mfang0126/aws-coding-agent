@@ -386,42 +386,44 @@ aws logs put-retention-policy \
 
 ## Cleanup (If Needed)
 
-To remove all resources:
+**For complete cleanup instructions, see [CLEANUP.md](CLEANUP.md)**
+
+### Quick Cleanup
+
 ```bash
-# Delete runtime
-aws bedrock-agentcore-control delete-agent-runtime \
-  --region ap-southeast-2 \
-  --agent-runtime-identifier coding-agent-production
+# One command to remove all resources
+AWS_PROFILE=mingfang agentcore destroy --agent coding_agent --delete-ecr-repo --force
+```
 
-# Delete OAuth provider
-aws bedrock-agentcore-control delete-oauth2-credential-provider \
-  --region ap-southeast-2 \
-  --name github-provider
+This removes:
+- AgentCore agent runtime and endpoint
+- ECR Docker images and repository
+- CodeBuild project
+- IAM execution roles
+- Agent configuration files
 
-# Detach and delete IAM policy
-aws iam detach-role-policy \
-  --role-name AgentCoreRuntimeRole \
-  --policy-arn arn:aws:iam::670326884047:policy/AgentCoreRuntimePolicy
+### Additional Cleanup
 
-aws iam delete-policy \
-  --policy-arn arn:aws:iam::670326884047:policy/AgentCoreRuntimePolicy
+```bash
+# Delete S3 bucket (manual)
+AWS_PROFILE=mingfang aws s3 rb s3://bedrock-agentcore-codebuild-sources-670326884047-ap-southeast-2 --force
 
-# Delete IAM role
-aws iam delete-role --role-name AgentCoreRuntimeRole
-
-# Delete CloudWatch log group
-aws logs delete-log-group \
-  --log-group-name /aws/bedrock/agentcore/coding-agent-production \
+# Delete OAuth provider (optional - can be reused)
+AWS_PROFILE=mingfang aws bedrock-agentcore delete-oauth2-credential-provider \
+  --name github-provider \
   --region ap-southeast-2
 ```
+
+**See [CLEANUP.md](CLEANUP.md) for detailed step-by-step cleanup guide.**
 
 ## Resources
 
 ### Documentation
-- [Complete Deployment Guide](docs/DEPLOYMENT.md)
-- [Quick Start (5 min)](docs/QUICK_START.md)
-- [Authentication Guide](docs/AUTHENTICATION.md)
-- [Commands Reference](docs/COMMANDS.md)
+- [Complete Deployment Guide](DEPLOYMENT.md)
+- [Quick Start (5 min)](QUICK_START.md)
+- [Cleanup Guide](CLEANUP.md)
+- [Authentication Guide](AUTHENTICATION.md)
+- [Commands Reference](COMMANDS_REFERENCE.md)
 
 ### AWS Resources
 - [BedrockAgentCore Documentation](https://docs.aws.amazon.com/bedrock/)

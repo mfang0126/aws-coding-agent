@@ -2,6 +2,116 @@
 
 AI coding assistant powered by AWS Bedrock and Claude Sonnet 4.5 with GitHub integration.
 
+## 🎯 What It Actually Does
+
+### **Implemented GitHub Tools (5 functions):**
+
+Based on `src/tools/github_tools.py`:
+
+```python
+# 1. List repositories
+@requires_access_token
+async def list_github_repos(limit: int = 10) -> list[dict]
+
+# 2. Get repository information
+@requires_access_token
+async def get_repo_info(repo_full_name: str) -> dict
+
+# 3. Create GitHub issue
+@requires_access_token
+async def create_github_issue(repo_full_name: str, title: str, body: str, labels: list[str] = None) -> dict
+
+# 4. List repository issues
+@requires_access_token
+async def list_github_issues(repo_full_name: str, state: str = 'open', limit: int = 10) -> list[dict]
+
+# 5. Create pull request
+@requires_access_token
+async def create_pull_request(repo_full_name: str, title: str, body: str, head: str, base: str = 'main') -> dict
+```
+
+### **AI Agent Implementation:**
+
+Based on `src/agent/create_agent.py`:
+
+```python
+# Single Strands Agent with:
+- Claude Sonnet 4.5 via AWS Bedrock
+- 5 GitHub tools (above)
+- System prompt for coding assistance
+- OAuth or personal token authentication
+```
+
+### **Authentication Modes:**
+
+From `src/agent/create_agent.py` lines 16-33:
+
+```python
+if settings.github_token:
+    # Local development: Use GITHUB_TOKEN from .env
+    from ..tools.github_tools_hybrid import [...]
+else:
+    # Production: Use OAuth via AgentCore Identity
+    from ..tools.github_tools import [...]
+```
+
+### **Session Management:**
+
+From `src/chat/session.py`:
+
+```python
+class SessionManager:
+    def __init__(self):
+        self._sessions: dict[str, list[ChatMessage]] = {}
+
+    def add_message(self, message: ChatMessage) -> None
+    def get_messages(self, session_id: str, limit: int | None = None) -> list[ChatMessage]
+```
+
+### **Deployment Architecture:**
+
+From `src/runtime.py`:
+
+```python
+app = BedrockAgentCoreApp()
+
+@app.entrypoint
+async def invoke(payload: Dict[str, Any]):
+    agent = get_agent()  # Lazy loading
+    async for chunk in agent(payload["prompt"]):
+        yield chunk  # Streaming responses
+```
+
+### **Actual Use Cases (What Works Right Now):**
+
+```bash
+# Working examples based on implemented tools:
+
+# 1. List repos (limited to 10)
+"List my GitHub repositories"
+
+# 2. Get repo info
+"Get information about facebook/react"
+
+# 3. Create issue
+"Create an issue in myrepo titled 'Bug in login page' with body 'Users cannot log in when using special characters'"
+
+# 4. List issues
+"List open issues in microsoft/vscode"
+
+# 5. Create PR (basic)
+"Create a pull request from feature-branch to main in myrepo with title 'Add user authentication'"
+```
+
+### **Technical Implementation Details:**
+
+- **Framework**: Strands agents + AWS Bedrock
+- **Language**: Python 3.11+
+- **Database**: In-memory session storage
+- **Authentication**: GitHub OAuth via AgentCore Identity or personal tokens
+- **Streaming**: Server-Sent Events for real-time responses
+- **Testing**: 38 tests covering AgentCore integration patterns
+
 ## 🚀 Quick Start
 
 **New to this project? Start here:**
